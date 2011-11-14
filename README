@@ -1,0 +1,91 @@
+--------------------------------------------------------------------------------
+Vim Color File
+--------------------------------------------------------------------------------
+
+Name:        mirodark
+Version:     0.1
+Last Change: 11-14-2011
+Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
+URL:         https://github.com/djjcast/mirodark
+
+About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim and Linux
+             console support. mirodark uses Jason W Ryan's dark(2) terminal color scheme colors.
+
+             1) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.vim/colors/miromiro.vim
+             2) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.colours/dark
+
+--------------------------------------------------------------------------------
+Usage Notes
+--------------------------------------------------------------------------------
+
+Installation:
+
+1) Add mirodark.vim to your ~/.vim/colors directory.
+2) Add the following to your ~/.vimrc file:
+
+    syntax on
+    colorscheme mirodark
+
+Terminal Support:
+
+1) Add the following to your ~/.Xresources file:
+
+    !
+    ! Terminal Color Scheme: dark
+    !
+    ! Maintainer: Jason W Ryan <http://jasonwryan.com/>
+    !
+    *background: #121212
+    *foreground: #999999
+    ! black dark/light
+    *color0:     #3d3d3d
+    *color8:     #5e5e5e
+    ! red dark/light
+    *color1:     #8a2f58
+    *color9:     #cf4f88
+    ! green dark/light
+    *color2:     #287373
+    *color10:    #53a6a6
+    ! yellow dark/light
+    *color3:     #914e89
+    *color11:    #bf85cc
+    ! blue dark/light
+    *color4:     #395573
+    *color12:    #4779b3
+    ! magenta dark/light
+    *color5:     #5e468c
+    *color13:    #7f62b3
+    ! cyan dark/light
+    *color6:     #2b7694
+    *color14:    #47959e
+    ! white dark/light
+    *color7:     #899ca1
+    *color15:    #c0c0c0    
+
+Linux Console Support:
+
+1) Add the following to your ~/.bashrc file:
+
+    #
+    # Linux Console Color Scheme: dark
+    #
+    # Maintainer: Jason W Ryan <http://jasonwryan.com/>
+    #
+    if [ "$TERM" = "linux" ]; then
+        echo -en "\033]P0000000" # black
+        echo -en "\033]P85e5e5e"
+        echo -en "\033]P18a2f58" # red
+        echo -en "\033]P9cf4f88"
+        echo -en "\033]P2287373" # green
+        echo -en "\033]Pa53a6a6"
+        echo -en "\033]P3914e89" # yellow
+        echo -en "\033]Pbbf85cc"
+        echo -en "\033]P4395573" # blue
+        echo -en "\033]Pc4779b3"
+        echo -en "\033]P55e468c" # magenta
+        echo -en "\033]Pd7f62b3"
+        echo -en "\033]P62b7694" # cyan
+        echo -en "\033]Pe47959e"
+        echo -en "\033]P7899ca1" # white
+        echo -en "\033]Pfc0c0c0"
+    fi
