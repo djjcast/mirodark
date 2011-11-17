@@ -3,16 +3,18 @@ Vim Color File
 --------------------------------------------------------------------------------
 
 Name:        mirodark
-Version:     0.1
-Last Change: 11-14-2011
+Version:     0.2
+Last Change: 11-16-2011
 Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 URL:         https://github.com/djjcast/mirodark
 
-About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim and Linux
-             console support. mirodark uses Jason W Ryan's dark(2) terminal color scheme colors.
+About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim, Linux console, xterm-88color,
+             and xterm-256color support. mirodark uses Jason W Ryan's dark(2) terminal color scheme colors.
+             mirodark uses Henry So, Jr.'s desert256(3) color approximation functions.
 
              1) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.vim/colors/miromiro.vim
              2) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.colours/dark
+             3) http://www.vim.org/scripts/script.php?script_id=1243
 
 --------------------------------------------------------------------------------
 Usage Notes
@@ -28,7 +30,15 @@ Installation:
 
 Terminal Support:
 
-1) Add the following to your ~/.Xresources file:
+mirodark uses color approximation functions to support xterm-88color and xterm-256color. If you are not using
+xterm-88color or xterm-256color, then follow these instructions to set up your terminal to use mirodark's color
+scheme. Also, if you are using xterm-88color or xterm-256color but want your terminal to use mirodark's color
+scheme, then follow these instructions.
+
+1) If you are using a terminal that sets its color settings based on your ~/.Xresources file, like xterm or rxvt-unicode,
+   then add the following to your ~/.Xresources file. If you are not using a terminal that sets its color settings
+   based on your ~/.Xresources file, like gnome-terminal or konsole, then set its color settings to the following color
+   values through its settings menu.
 
     !
     ! Terminal Color Scheme: dark
@@ -60,7 +70,11 @@ Terminal Support:
     *color14:    #47959e
     ! white dark/light
     *color7:     #899ca1
-    *color15:    #c0c0c0    
+    *color15:    #c0c0c0
+
+2) If you are using xterm-88color or xterm-256color, then add the following to your ~/.vimrc file:
+
+    let g:mirodark_use_native_colors=1
 
 Linux Console Support:
 

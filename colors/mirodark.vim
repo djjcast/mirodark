@@ -1,16 +1,18 @@
 " Vim Color File {{{
 "
 " Name:        mirodark
-" Version:     0.1
-" Last Change: 11-14-2011
+" Version:     0.2
+" Last Change: 11-16-2011
 " Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
-" About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim and Linux
-"              console support. mirodark uses Jason W Ryan's dark(2) terminal color scheme colors.
+" About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim, Linux console, xterm-88color,
+"              and xterm-256color support. mirodark uses Jason W Ryan's dark(2) terminal color scheme colors.
+"              mirodark uses Henry So, Jr.'s desert256(3) color approximation functions.
 "
 "              1) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.vim/colors/miromiro.vim
 "              2) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.colours/dark
+"              3) http://www.vim.org/scripts/script.php?script_id=1243
 "
 " }}}
 
@@ -26,7 +28,15 @@
 "
 " Terminal Support:
 "
-" 1) Add the following to your ~/.Xresources file:
+" mirodark uses color approximation functions to support xterm-88color and xterm-256color. If you are not using
+" xterm-88color or xterm-256color, then follow these instructions to set up your terminal to use mirodark's color
+" scheme. Also, if you are using xterm-88color or xterm-256color but want your terminal to use mirodark's color
+" scheme, then follow these instructions.
+"
+" 1) If you are using a terminal that sets its color settings based on your ~/.Xresources file, like xterm or rxvt-unicode,
+"    then add the following to your ~/.Xresources file. If you are not using a terminal that sets its color settings
+"    based on your ~/.Xresources file, like gnome-terminal or konsole, then set its color settings to the following color
+"    values through its settings menu.
 "
 "     !
 "     ! Terminal Color Scheme: dark
@@ -58,7 +68,11 @@
 "     *color14:    #47959e
 "     ! white dark/light
 "     *color7:     #899ca1
-"     *color15:    #c0c0c0    
+"     *color15:    #c0c0c0
+"
+" 2) If you are using xterm-88color or xterm-256color, then add the following to your ~/.vimrc file:
+"
+"     let g:mirodark_use_native_colors=1
 "
 " Linux Console Support:
 "
@@ -99,47 +113,269 @@ let colors_name="mirodark"
 " }}}
 
 " color scheme variables {{{
-if has("gui_running")
-    let s:venv="gui"     " vim environment (term, cterm, gui)
-    let s:bclr="#121212" " background color
-    let s:fclr="#999999" " foreground color
-    let s:dblk="#3d3d3d" " dark black    (color 0)
-    let s:lblk="#5e5e5e" " light black   (color 8)
-    let s:dred="#8a2f58" " dark red      (color 1)
-    let s:lred="#cf4f88" " light red     (color 9)
-    let s:dgrn="#287373" " dark green    (color 2)
-    let s:lgrn="#53a6a6" " light green   (color 10)
-    let s:dylw="#914e89" " dark yellow   (color 3)
-    let s:lylw="#bf85cc" " light yellow  (color 11)
-    let s:dblu="#395573" " dark blue     (color 4)
-    let s:lblu="#4779b3" " light blue    (color 12)
-    let s:dmag="#5e468c" " dark magenta  (color 5)
-    let s:lmag="#7f62b3" " light magenta (color 13)
-    let s:dcyn="#2b7694" " dark cyan     (color 6)
-    let s:lcyn="#47959e" " light cyan    (color 14)
-    let s:dwht="#899ca1" " dark white    (color 7)
-    let s:lwht="#c0c0c0" " light white   (color 15)
-elseif &t_Co >= 16
-    let s:venv="cterm"
-    let s:bclr=""
-    let s:fclr=""
-    let s:dblk="0"
-    let s:lblk="8"
-    let s:dred="1"
-    let s:lred="9"
-    let s:dgrn="2"
-    let s:lgrn="10"
-    let s:dylw="3"
-    let s:lylw="11"
-    let s:dblu="4"
-    let s:lblu="12"
-    let s:dmag="5"
-    let s:lmag="13"
-    let s:dcyn="6"
-    let s:lcyn="14"
-    let s:dwht="7"
-    let s:lwht="15"
-elseif &t_Co == 8
+if has("gui_running") || ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_use_native_colors"))
+    let s:bclr_hex="121212" " background color
+    let s:fclr_hex="999999" " foreground color
+    let s:dblk_hex="3d3d3d" " dark black    (color 0)
+    let s:lblk_hex="5e5e5e" " light black   (color 8)
+    let s:dred_hex="8a2f58" " dark red      (color 1)
+    let s:lred_hex="cf4f88" " light red     (color 9)
+    let s:dgrn_hex="287373" " dark green    (color 2)
+    let s:lgrn_hex="53a6a6" " light green   (color 10)
+    let s:dylw_hex="914e89" " dark yellow   (color 3)
+    let s:lylw_hex="bf85cc" " light yellow  (color 11)
+    let s:dblu_hex="395573" " dark blue     (color 4)
+    let s:lblu_hex="4779b3" " light blue    (color 12)
+    let s:dmag_hex="5e468c" " dark magenta  (color 5)
+    let s:lmag_hex="7f62b3" " light magenta (color 13)
+    let s:dcyn_hex="2b7694" " dark cyan     (color 6)
+    let s:lcyn_hex="47959e" " light cyan    (color 14)
+    let s:dwht_hex="899ca1" " dark white    (color 7)
+    let s:lwht_hex="c0c0c0" " light white   (color 15)
+
+    if has("gui_running")
+        let s:venv="gui" " vim environment (term, cterm, gui)
+        let s:bclr="#".s:bclr_hex
+        let s:fclr="#".s:fclr_hex
+        let s:dblk="#".s:dblk_hex
+        let s:lblk="#".s:lblk_hex
+        let s:dred="#".s:dred_hex
+        let s:lred="#".s:lred_hex
+        let s:dgrn="#".s:dgrn_hex
+        let s:lgrn="#".s:lgrn_hex
+        let s:dylw="#".s:dylw_hex
+        let s:lylw="#".s:lylw_hex
+        let s:dblu="#".s:dblu_hex
+        let s:lblu="#".s:lblu_hex
+        let s:dmag="#".s:dmag_hex
+        let s:lmag="#".s:lmag_hex
+        let s:dcyn="#".s:dcyn_hex
+        let s:lcyn="#".s:lcyn_hex
+        let s:dwht="#".s:dwht_hex
+        let s:lwht="#".s:lwht_hex
+    else
+        "
+        " desert256 Color Approximation Functions
+        "
+        " Maintainer: Henry So, Jr. <henryso@panix.com>
+        "
+        " functions {{{
+        " returns an approximate grey index for the given grey level
+        fun! s:grey_number(x)
+            if &t_Co == 88
+                if a:x < 23
+                    return 0
+                elseif a:x < 69
+                    return 1
+                elseif a:x < 103
+                    return 2
+                elseif a:x < 127
+                    return 3
+                elseif a:x < 150
+                    return 4
+                elseif a:x < 173
+                    return 5
+                elseif a:x < 196
+                    return 6
+                elseif a:x < 219
+                    return 7
+                elseif a:x < 243
+                    return 8
+                else
+                    return 9
+                endif
+            else
+                if a:x < 14
+                    return 0
+                else
+                    let l:n = (a:x - 8) / 10
+                    let l:m = (a:x - 8) % 10
+                    if l:m < 5
+                        return l:n
+                    else
+                        return l:n + 1
+                    endif
+                endif
+            endif
+        endfun
+
+        " returns the actual grey level represented by the grey index
+        fun! s:grey_level(n)
+            if &t_Co == 88
+                if a:n == 0
+                    return 0
+                elseif a:n == 1
+                    return 46
+                elseif a:n == 2
+                    return 92
+                elseif a:n == 3
+                    return 115
+                elseif a:n == 4
+                    return 139
+                elseif a:n == 5
+                    return 162
+                elseif a:n == 6
+                    return 185
+                elseif a:n == 7
+                    return 208
+                elseif a:n == 8
+                    return 231
+                else
+                    return 255
+                endif
+            else
+                if a:n == 0
+                    return 0
+                else
+                    return 8 + (a:n * 10)
+                endif
+            endif
+        endfun
+
+        " returns the palette index for the given grey index
+        fun! s:grey_color(n)
+            if &t_Co == 88
+                if a:n == 0
+                    return 16
+                elseif a:n == 9
+                    return 79
+                else
+                    return 79 + a:n
+                endif
+            else
+                if a:n == 0
+                    return 16
+                elseif a:n == 25
+                    return 231
+                else
+                    return 231 + a:n
+                endif
+            endif
+        endfun
+
+        " returns an approximate color index for the given color level
+        fun! s:rgb_number(x)
+            if &t_Co == 88
+                if a:x < 69
+                    return 0
+                elseif a:x < 172
+                    return 1
+                elseif a:x < 230
+                    return 2
+                else
+                    return 3
+                endif
+            else
+                if a:x < 75
+                    return 0
+                else
+                    let l:n = (a:x - 55) / 40
+                    let l:m = (a:x - 55) % 40
+                    if l:m < 20
+                        return l:n
+                    else
+                        return l:n + 1
+                    endif
+                endif
+            endif
+        endfun
+
+        " returns the actual color level for the given color index
+        fun! s:rgb_level(n)
+            if &t_Co == 88
+                if a:n == 0
+                    return 0
+                elseif a:n == 1
+                    return 139
+                elseif a:n == 2
+                    return 205
+                else
+                    return 255
+                endif
+            else
+                if a:n == 0
+                    return 0
+                else
+                    return 55 + (a:n * 40)
+                endif
+            endif
+        endfun
+
+        " returns the palette index for the given R/G/B color indices
+        fun! s:rgb_color(x, y, z)
+            if &t_Co == 88
+                return 16 + (a:x * 16) + (a:y * 4) + a:z
+            else
+                return 16 + (a:x * 36) + (a:y * 6) + a:z
+            endif
+        endfun
+
+        " returns the palette index to approximate the given R/G/B color levels
+        fun! s:color(r, g, b)
+            " get the closest grey
+            let l:gx = s:grey_number(a:r)
+            let l:gy = s:grey_number(a:g)
+            let l:gz = s:grey_number(a:b)
+
+            " get the closest color
+            let l:x = s:rgb_number(a:r)
+            let l:y = s:rgb_number(a:g)
+            let l:z = s:rgb_number(a:b)
+
+            if l:gx == l:gy && l:gy == l:gz
+                " there are two possibilities
+                let l:dgr = s:grey_level(l:gx) - a:r
+                let l:dgg = s:grey_level(l:gy) - a:g
+                let l:dgb = s:grey_level(l:gz) - a:b
+                let l:dgrey = (l:dgr * l:dgr) + (l:dgg * l:dgg) + (l:dgb * l:dgb)
+                let l:dr = s:rgb_level(l:gx) - a:r
+                let l:dg = s:rgb_level(l:gy) - a:g
+                let l:db = s:rgb_level(l:gz) - a:b
+                let l:drgb = (l:dr * l:dr) + (l:dg * l:dg) + (l:db * l:db)
+                if l:dgrey < l:drgb
+                    " use the grey
+                    return s:grey_color(l:gx)
+                else
+                    " use the color
+                    return s:rgb_color(l:x, l:y, l:z)
+                endif
+            else
+                " only one possibility
+                return s:rgb_color(l:x, l:y, l:z)
+            endif
+        endfun
+
+        " returns the palette index to approximate the 'rrggbb' hex string
+        fun! s:rgb(rgb)
+            let l:r = ("0x" . strpart(a:rgb, 0, 2)) + 0
+            let l:g = ("0x" . strpart(a:rgb, 2, 2)) + 0
+            let l:b = ("0x" . strpart(a:rgb, 4, 2)) + 0
+
+            return s:color(l:r, l:g, l:b)
+        endfun
+        " }}}
+
+        let s:venv="cterm"
+        let s:bclr=s:rgb(s:bclr_hex)
+        let s:fclr=s:rgb(s:fclr_hex)
+        let s:dblk=s:rgb(s:dblk_hex)
+        let s:lblk=s:rgb(s:lblk_hex)
+        let s:dred=s:rgb(s:dred_hex)
+        let s:lred=s:rgb(s:lred_hex)
+        let s:dgrn=s:rgb(s:dgrn_hex)
+        let s:lgrn=s:rgb(s:lgrn_hex)
+        let s:dylw=s:rgb(s:dylw_hex)
+        let s:lylw=s:rgb(s:lylw_hex)
+        let s:dblu=s:rgb(s:dblu_hex)
+        let s:lblu=s:rgb(s:lblu_hex)
+        let s:dmag=s:rgb(s:dmag_hex)
+        let s:lmag=s:rgb(s:lmag_hex)
+        let s:dcyn=s:rgb(s:dcyn_hex)
+        let s:lcyn=s:rgb(s:lcyn_hex)
+        let s:dwht=s:rgb(s:dwht_hex)
+        let s:lwht=s:rgb(s:lwht_hex)
+    endif
+elseif $TERM == "linux"
     let s:venv="cterm"
     let s:bclr=""
     let s:fclr=""
@@ -159,6 +395,26 @@ elseif &t_Co == 8
     let s:lcyn="LightCyan"
     let s:dwht="LightGray"
     let s:lwht="White"
+else
+    let s:venv="cterm"
+    let s:bclr=""
+    let s:fclr=""
+    let s:dblk="0"
+    let s:lblk="8"
+    let s:dred="1"
+    let s:lred="9"
+    let s:dgrn="2"
+    let s:lgrn="10"
+    let s:dylw="3"
+    let s:lylw="11"
+    let s:dblu="4"
+    let s:lblu="12"
+    let s:dmag="5"
+    let s:lmag="13"
+    let s:dcyn="6"
+    let s:lcyn="14"
+    let s:dwht="7"
+    let s:lwht="15"
 endif
 " }}}
 
