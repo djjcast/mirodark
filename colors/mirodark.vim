@@ -1,20 +1,19 @@
-" Vim Color File {{{
+" Vim Color File
 "
 " Name:        mirodark
 " Version:     0.2
-" Last Change: 11-16-2011
+" Last Change: 11-17-2011
 " Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
-" About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim, Linux console, xterm-88color,
-"              and xterm-256color support. mirodark uses Jason W Ryan's dark(2) terminal color scheme colors.
-"              mirodark uses Henry So, Jr.'s desert256(3) color approximation functions.
+" About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim, Linux console,
+"              xterm-88color, and xterm-256color support. mirodark uses Jason W Ryan's dark(2)
+"              terminal color scheme colors. mirodark uses Henry So, Jr.'s desert256(3) color
+"              approximation functions.
 "
 "              1) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.vim/colors/miromiro.vim
 "              2) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.colours/dark
 "              3) http://www.vim.org/scripts/script.php?script_id=1243
-"
-" }}}
 
 " Usage Notes {{{
 "
@@ -28,15 +27,15 @@
 "
 " Terminal Support:
 "
-" mirodark uses color approximation functions to support xterm-88color and xterm-256color. If you are not using
-" xterm-88color or xterm-256color, then follow these instructions to set up your terminal to use mirodark's color
-" scheme. Also, if you are using xterm-88color or xterm-256color but want your terminal to use mirodark's color
-" scheme, then follow these instructions.
+" mirodark uses color approximation functions to support xterm-88color and xterm-256color. If you
+" are not using xterm-88color or xterm-256color, then follow these instructions to set up your
+" terminal to use mirodark's color scheme. Also, if you are using xterm-88color or xterm-256color
+" but you want your terminal to use mirodark's color scheme, then follow these instructions.
 "
-" 1) If you are using a terminal that sets its color settings based on your ~/.Xresources file, like xterm or rxvt-unicode,
-"    then add the following to your ~/.Xresources file. If you are not using a terminal that sets its color settings
-"    based on your ~/.Xresources file, like gnome-terminal or konsole, then set its color settings to the following color
-"    values through its settings menu.
+" 1) If you are using a terminal that sets its color settings based on your ~/.Xresources file, like
+"    xterm or rxvt-unicode, then add the following to your ~/.Xresources file. If you are not using
+"    a terminal that sets its color settings based on your ~/.Xresources file, like gnome-terminal
+"    or konsole, then set its color settings to the following color values manually.
 "
 "     !
 "     ! Terminal Color Scheme: dark
@@ -72,7 +71,7 @@
 "
 " 2) If you are using xterm-88color or xterm-256color, then add the following to your ~/.vimrc file:
 "
-"     let g:mirodark_use_native_colors=1
+"     let g:mirodark_disable_color_approximation=1
 "
 " Linux Console Support:
 "
@@ -113,7 +112,8 @@ let colors_name="mirodark"
 " }}}
 
 " color scheme variables {{{
-if has("gui_running") || ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_use_native_colors"))
+if has("gui_running") ||
+            \ ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_disable_color_approximation"))
     let s:bclr_hex="121212" " background color
     let s:fclr_hex="999999" " foreground color
     let s:dblk_hex="3d3d3d" " dark black    (color 0)
@@ -537,3 +537,5 @@ if version >= 700
     call s:HI( "SpellLocal", "", "", "underline" )
 endif
 " }}}
+
+" vim: foldenable foldmethod=marker foldmarker={{{,}}} foldlevel=0:
