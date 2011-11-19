@@ -2,8 +2,8 @@ Vim Color File
 ==============
 
 Name:        mirodark
-Version:     0.2
-Last Change: 11-17-2011
+Version:     0.3
+Last Change: 11-18-2011
 Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 URL:         https://github.com/djjcast/mirodark
 
@@ -16,8 +16,8 @@ About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVi
              2) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.colours/dark
              3) http://www.vim.org/scripts/script.php?script_id=1243
 
-Usage Notes
-===========
+Usage
+=====
 
 Installation:
 
@@ -102,3 +102,12 @@ Linux Console Support:
         echo -en "\033]P7899ca1" # white
         echo -en "\033]Pfc0c0c0"
     fi
+
+Enable Higher Contrast Mode:
+
+NOTE: Enabling Higher Contrast Mode only affects mirodark in xterm-256color and xterm-88color,
+      assuming you did not disable color approximation, and gVim.
+
+1) Add the following to your ~/.vimrc file:
+
+    let g:mirodark_enable_higher_constrast_mode=1

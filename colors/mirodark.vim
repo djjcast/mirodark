@@ -1,8 +1,8 @@
 " Vim Color File
 "
 " Name:        mirodark
-" Version:     0.2
-" Last Change: 11-17-2011
+" Version:     0.3
+" Last Change: 11-18-2011
 " Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -15,7 +15,7 @@
 "              2) https://bitbucket.org/jasonwryan/eeepc/src/40f27908ce98/.colours/dark
 "              3) http://www.vim.org/scripts/script.php?script_id=1243
 
-" Usage Notes {{{
+" Usage {{{
 "
 " Installation:
 "
@@ -100,6 +100,219 @@
 "         echo -en "\033]P7899ca1" # white
 "         echo -en "\033]Pfc0c0c0"
 "     fi
+"
+" Enable Higher Contrast Mode:
+"
+" NOTE: Enabling Higher Contrast Mode only affects mirodark in xterm-256color and xterm-88color,
+"       assuming you did not disable color approximation, and gVim.
+"
+" 1) Add the following to your ~/.vimrc file:
+"
+"     let g:mirodark_enable_higher_constrast_mode=1
+" }}}
+
+" color approximation functions {{{
+"
+" desert256 Color Approximation Functions
+"
+" Maintainer: Henry So, Jr. <henryso@panix.com>
+"
+if !has("gui_running") &&
+            \ ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_disable_color_approximation"))
+    " returns an approximate grey index for the given grey level
+    fun! s:grey_number(x)
+        if &t_Co == 88
+            if a:x < 23
+                return 0
+            elseif a:x < 69
+                return 1
+            elseif a:x < 103
+                return 2
+            elseif a:x < 127
+                return 3
+            elseif a:x < 150
+                return 4
+            elseif a:x < 173
+                return 5
+            elseif a:x < 196
+                return 6
+            elseif a:x < 219
+                return 7
+            elseif a:x < 243
+                return 8
+            else
+                return 9
+            endif
+        else
+            if a:x < 14
+                return 0
+            else
+                let l:n = (a:x - 8) / 10
+                let l:m = (a:x - 8) % 10
+                if l:m < 5
+                    return l:n
+                else
+                    return l:n + 1
+                endif
+            endif
+        endif
+    endfun
+
+    " returns the actual grey level represented by the grey index
+    fun! s:grey_level(n)
+        if &t_Co == 88
+            if a:n == 0
+                return 0
+            elseif a:n == 1
+                return 46
+            elseif a:n == 2
+                return 92
+            elseif a:n == 3
+                return 115
+            elseif a:n == 4
+                return 139
+            elseif a:n == 5
+                return 162
+            elseif a:n == 6
+                return 185
+            elseif a:n == 7
+                return 208
+            elseif a:n == 8
+                return 231
+            else
+                return 255
+            endif
+        else
+            if a:n == 0
+                return 0
+            else
+                return 8 + (a:n * 10)
+            endif
+        endif
+    endfun
+
+    " returns the palette index for the given grey index
+    fun! s:grey_color(n)
+        if &t_Co == 88
+            if a:n == 0
+                return 16
+            elseif a:n == 9
+                return 79
+            else
+                return 79 + a:n
+            endif
+        else
+            if a:n == 0
+                return 16
+            elseif a:n == 25
+                return 231
+            else
+                return 231 + a:n
+            endif
+        endif
+    endfun
+
+    " returns an approximate color index for the given color level
+    fun! s:rgb_number(x)
+        if &t_Co == 88
+            if a:x < 69
+                return 0
+            elseif a:x < 172
+                return 1
+            elseif a:x < 230
+                return 2
+            else
+                return 3
+            endif
+        else
+            if a:x < 75
+                return 0
+            else
+                let l:n = (a:x - 55) / 40
+                let l:m = (a:x - 55) % 40
+                if l:m < 20
+                    return l:n
+                else
+                    return l:n + 1
+                endif
+            endif
+        endif
+    endfun
+
+    " returns the actual color level for the given color index
+    fun! s:rgb_level(n)
+        if &t_Co == 88
+            if a:n == 0
+                return 0
+            elseif a:n == 1
+                return 139
+            elseif a:n == 2
+                return 205
+            else
+                return 255
+            endif
+        else
+            if a:n == 0
+                return 0
+            else
+                return 55 + (a:n * 40)
+            endif
+        endif
+    endfun
+
+    " returns the palette index for the given R/G/B color indices
+    fun! s:rgb_color(x, y, z)
+        if &t_Co == 88
+            return 16 + (a:x * 16) + (a:y * 4) + a:z
+        else
+            return 16 + (a:x * 36) + (a:y * 6) + a:z
+        endif
+    endfun
+
+    " returns the palette index to approximate the given R/G/B color levels
+    fun! s:color(r, g, b)
+        " get the closest grey
+        let l:gx = s:grey_number(a:r)
+        let l:gy = s:grey_number(a:g)
+        let l:gz = s:grey_number(a:b)
+
+        " get the closest color
+        let l:x = s:rgb_number(a:r)
+        let l:y = s:rgb_number(a:g)
+        let l:z = s:rgb_number(a:b)
+
+        if l:gx == l:gy && l:gy == l:gz
+            " there are two possibilities
+            let l:dgr = s:grey_level(l:gx) - a:r
+            let l:dgg = s:grey_level(l:gy) - a:g
+            let l:dgb = s:grey_level(l:gz) - a:b
+            let l:dgrey = (l:dgr * l:dgr) + (l:dgg * l:dgg) + (l:dgb * l:dgb)
+            let l:dr = s:rgb_level(l:gx) - a:r
+            let l:dg = s:rgb_level(l:gy) - a:g
+            let l:db = s:rgb_level(l:gz) - a:b
+            let l:drgb = (l:dr * l:dr) + (l:dg * l:dg) + (l:db * l:db)
+            if l:dgrey < l:drgb
+                " use the grey
+                return s:grey_color(l:gx)
+            else
+                " use the color
+                return s:rgb_color(l:x, l:y, l:z)
+            endif
+        else
+            " only one possibility
+            return s:rgb_color(l:x, l:y, l:z)
+        endif
+    endfun
+
+    " returns the palette index to approximate the 'rrggbb' hex string
+    fun! s:rgb(rgb)
+        let l:r = ("0x" . strpart(a:rgb, 0, 2)) + 0
+        let l:g = ("0x" . strpart(a:rgb, 2, 2)) + 0
+        let l:b = ("0x" . strpart(a:rgb, 4, 2)) + 0
+
+        return s:color(l:r, l:g, l:b)
+    endfun
+endif
 " }}}
 
 " color scheme initialization {{{
@@ -114,24 +327,34 @@ let colors_name="mirodark"
 " color scheme variables {{{
 if has("gui_running") ||
             \ ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_disable_color_approximation"))
-    let s:bclr_hex="121212" " background color
-    let s:fclr_hex="999999" " foreground color
-    let s:dblk_hex="3d3d3d" " dark black    (color 0)
-    let s:lblk_hex="5e5e5e" " light black   (color 8)
-    let s:dred_hex="8a2f58" " dark red      (color 1)
-    let s:lred_hex="cf4f88" " light red     (color 9)
-    let s:dgrn_hex="287373" " dark green    (color 2)
-    let s:lgrn_hex="53a6a6" " light green   (color 10)
-    let s:dylw_hex="914e89" " dark yellow   (color 3)
-    let s:lylw_hex="bf85cc" " light yellow  (color 11)
-    let s:dblu_hex="395573" " dark blue     (color 4)
-    let s:lblu_hex="4779b3" " light blue    (color 12)
-    let s:dmag_hex="5e468c" " dark magenta  (color 5)
-    let s:lmag_hex="7f62b3" " light magenta (color 13)
-    let s:dcyn_hex="2b7694" " dark cyan     (color 6)
-    let s:lcyn_hex="47959e" " light cyan    (color 14)
-    let s:dwht_hex="899ca1" " dark white    (color 7)
-    let s:lwht_hex="c0c0c0" " light white   (color 15)
+    if !exists("g:mirodark_enable_higher_contrast_mode")
+        let s:conf_bclr_hex="121212" " configuration-based background color hexadecimal
+        let s:conf_dblk_hex="3d3d3d" " configuration-based dark black hexadecimal
+        let s:conf_lblk_hex="5e5e5e" " configuration-based light black hexadecimal
+    else
+        let s:conf_bclr_hex="000000"
+        let s:conf_dblk_hex="121212"
+        let s:conf_lblk_hex="3d3d3d"
+    endif
+
+    let s:bclr_hex=s:conf_bclr_hex " background color hexadecimal
+    let s:fclr_hex="999999"        " foreground color hexadecimal
+    let s:dblk_hex=s:conf_dblk_hex " dark black hexadecimal    (color 0)
+    let s:lblk_hex=s:conf_lblk_hex " light black hexadecimal   (color 8)
+    let s:dred_hex="8a2f58"        " dark red hexadecimal      (color 1)
+    let s:lred_hex="cf4f88"        " light red hexadecimal     (color 9)
+    let s:dgrn_hex="287373"        " dark green hexadecimal    (color 2)
+    let s:lgrn_hex="53a6a6"        " light green hexadecimal   (color 10)
+    let s:dylw_hex="914e89"        " dark yellow hexadecimal   (color 3)
+    let s:lylw_hex="bf85cc"        " light yellow hexadecimal  (color 11)
+    let s:dblu_hex="395573"        " dark blue hexadecimal     (color 4)
+    let s:lblu_hex="4779b3"        " light blue hexadecimal    (color 12)
+    let s:dmag_hex="5e468c"        " dark magentahexadecimal   (color 5)
+    let s:lmag_hex="7f62b3"        " light magenta hexadecimal (color 13)
+    let s:dcyn_hex="2b7694"        " dark cyan hexadecimal     (color 6)
+    let s:lcyn_hex="47959e"        " light cyan hexadecimal    (color 14)
+    let s:dwht_hex="899ca1"        " dark white hexadecimal    (color 7)
+    let s:lwht_hex="c0c0c0"        " light white hexadecimal   (color 15)
 
     if has("gui_running")
         let s:venv="gui" " vim environment (term, cterm, gui)
@@ -154,207 +377,6 @@ if has("gui_running") ||
         let s:dwht="#".s:dwht_hex
         let s:lwht="#".s:lwht_hex
     else
-        "
-        " desert256 Color Approximation Functions
-        "
-        " Maintainer: Henry So, Jr. <henryso@panix.com>
-        "
-        " functions {{{
-        " returns an approximate grey index for the given grey level
-        fun! s:grey_number(x)
-            if &t_Co == 88
-                if a:x < 23
-                    return 0
-                elseif a:x < 69
-                    return 1
-                elseif a:x < 103
-                    return 2
-                elseif a:x < 127
-                    return 3
-                elseif a:x < 150
-                    return 4
-                elseif a:x < 173
-                    return 5
-                elseif a:x < 196
-                    return 6
-                elseif a:x < 219
-                    return 7
-                elseif a:x < 243
-                    return 8
-                else
-                    return 9
-                endif
-            else
-                if a:x < 14
-                    return 0
-                else
-                    let l:n = (a:x - 8) / 10
-                    let l:m = (a:x - 8) % 10
-                    if l:m < 5
-                        return l:n
-                    else
-                        return l:n + 1
-                    endif
-                endif
-            endif
-        endfun
-
-        " returns the actual grey level represented by the grey index
-        fun! s:grey_level(n)
-            if &t_Co == 88
-                if a:n == 0
-                    return 0
-                elseif a:n == 1
-                    return 46
-                elseif a:n == 2
-                    return 92
-                elseif a:n == 3
-                    return 115
-                elseif a:n == 4
-                    return 139
-                elseif a:n == 5
-                    return 162
-                elseif a:n == 6
-                    return 185
-                elseif a:n == 7
-                    return 208
-                elseif a:n == 8
-                    return 231
-                else
-                    return 255
-                endif
-            else
-                if a:n == 0
-                    return 0
-                else
-                    return 8 + (a:n * 10)
-                endif
-            endif
-        endfun
-
-        " returns the palette index for the given grey index
-        fun! s:grey_color(n)
-            if &t_Co == 88
-                if a:n == 0
-                    return 16
-                elseif a:n == 9
-                    return 79
-                else
-                    return 79 + a:n
-                endif
-            else
-                if a:n == 0
-                    return 16
-                elseif a:n == 25
-                    return 231
-                else
-                    return 231 + a:n
-                endif
-            endif
-        endfun
-
-        " returns an approximate color index for the given color level
-        fun! s:rgb_number(x)
-            if &t_Co == 88
-                if a:x < 69
-                    return 0
-                elseif a:x < 172
-                    return 1
-                elseif a:x < 230
-                    return 2
-                else
-                    return 3
-                endif
-            else
-                if a:x < 75
-                    return 0
-                else
-                    let l:n = (a:x - 55) / 40
-                    let l:m = (a:x - 55) % 40
-                    if l:m < 20
-                        return l:n
-                    else
-                        return l:n + 1
-                    endif
-                endif
-            endif
-        endfun
-
-        " returns the actual color level for the given color index
-        fun! s:rgb_level(n)
-            if &t_Co == 88
-                if a:n == 0
-                    return 0
-                elseif a:n == 1
-                    return 139
-                elseif a:n == 2
-                    return 205
-                else
-                    return 255
-                endif
-            else
-                if a:n == 0
-                    return 0
-                else
-                    return 55 + (a:n * 40)
-                endif
-            endif
-        endfun
-
-        " returns the palette index for the given R/G/B color indices
-        fun! s:rgb_color(x, y, z)
-            if &t_Co == 88
-                return 16 + (a:x * 16) + (a:y * 4) + a:z
-            else
-                return 16 + (a:x * 36) + (a:y * 6) + a:z
-            endif
-        endfun
-
-        " returns the palette index to approximate the given R/G/B color levels
-        fun! s:color(r, g, b)
-            " get the closest grey
-            let l:gx = s:grey_number(a:r)
-            let l:gy = s:grey_number(a:g)
-            let l:gz = s:grey_number(a:b)
-
-            " get the closest color
-            let l:x = s:rgb_number(a:r)
-            let l:y = s:rgb_number(a:g)
-            let l:z = s:rgb_number(a:b)
-
-            if l:gx == l:gy && l:gy == l:gz
-                " there are two possibilities
-                let l:dgr = s:grey_level(l:gx) - a:r
-                let l:dgg = s:grey_level(l:gy) - a:g
-                let l:dgb = s:grey_level(l:gz) - a:b
-                let l:dgrey = (l:dgr * l:dgr) + (l:dgg * l:dgg) + (l:dgb * l:dgb)
-                let l:dr = s:rgb_level(l:gx) - a:r
-                let l:dg = s:rgb_level(l:gy) - a:g
-                let l:db = s:rgb_level(l:gz) - a:b
-                let l:drgb = (l:dr * l:dr) + (l:dg * l:dg) + (l:db * l:db)
-                if l:dgrey < l:drgb
-                    " use the grey
-                    return s:grey_color(l:gx)
-                else
-                    " use the color
-                    return s:rgb_color(l:x, l:y, l:z)
-                endif
-            else
-                " only one possibility
-                return s:rgb_color(l:x, l:y, l:z)
-            endif
-        endfun
-
-        " returns the palette index to approximate the 'rrggbb' hex string
-        fun! s:rgb(rgb)
-            let l:r = ("0x" . strpart(a:rgb, 0, 2)) + 0
-            let l:g = ("0x" . strpart(a:rgb, 2, 2)) + 0
-            let l:b = ("0x" . strpart(a:rgb, 4, 2)) + 0
-
-            return s:color(l:r, l:g, l:b)
-        endfun
-        " }}}
-
         let s:venv="cterm"
         let s:bclr=s:rgb(s:bclr_hex)
         let s:fclr=s:rgb(s:fclr_hex)
@@ -428,82 +450,89 @@ endfun
 " }}}
 
 " normal colors {{{
-call s:HI(         "Normal", s:bclr, s:lwht,        "" )
-call s:HI(         "Ignore",     "", s:lblk,        "" )
-call s:HI(        "Comment",     "", s:dwht,        "" )
-call s:HI(         "LineNr",     "", s:lblk,        "" )
-call s:HI(          "Float",     "", s:dylw,        "" )
-call s:HI(        "Include",     "", s:dmag,        "" )
-call s:HI(         "Define",     "", s:dgrn,        "" )
-call s:HI(          "Macro",     "", s:lmag,        "" )
-call s:HI(        "PreProc",     "", s:lgrn,        "" )
-call s:HI(      "PreCondit",     "", s:lmag,        "" )
-call s:HI(        "NonText",     "", s:dcyn,        "" )
-call s:HI(      "Directory",     "", s:dcyn,        "" )
-call s:HI(     "SpecialKey",     "", s:lylw,        "" )
-call s:HI(           "Type",     "", s:dcyn,        "" )
-call s:HI(         "String",     "", s:dgrn,        "" )
-call s:HI(       "Constant",     "", s:lmag,        "" )
-call s:HI(        "Special",     "", s:lgrn,        "" )
-call s:HI(    "SpecialChar",     "", s:lred,        "" )
-call s:HI(         "Number",     "", s:lcyn,        "" )
-call s:HI(     "Identifier",     "", s:lmag,        "" )
-call s:HI(    "Conditional",     "", s:lcyn,        "" )
-call s:HI(         "Repeat",     "", s:lred,        "" )
-call s:HI(      "Statement",     "", s:dblu,        "" )
-call s:HI(          "Label",     "", s:lmag,        "" )
-call s:HI(       "Operator",     "", s:dylw,        "" )
-call s:HI(        "Keyword",     "", s:lred,        "" )
-call s:HI(   "StorageClass",     "", s:lylw,        "" )
-call s:HI(      "Structure",     "", s:dmag,        "" )
-call s:HI(        "Typedef",     "", s:dcyn,        "" )
-call s:HI(       "Function",     "", s:lylw,        "" )
-call s:HI(      "Exception",     "", s:dred,        "" )
-call s:HI(     "Underlined",     "", s:dblu,        "" )
-call s:HI(          "Title",     "", s:dylw,        "" )
-call s:HI(            "Tag",     "", s:lylw,        "" )
-call s:HI(      "Delimiter",     "", s:lblu,        "" )
-call s:HI( "SpecialComment",     "", s:lred,        "" )
-call s:HI(        "Boolean",     "", s:dylw,        "" )
-call s:HI(           "Todo", "NONE", s:lred,        "" )
-call s:HI(        "MoreMsg", "NONE", s:lmag,        "" )
-call s:HI(        "ModeMsg", "NONE", s:lmag,        "" )
-call s:HI(          "Debug", "NONE", s:dred,        "" )
-call s:HI(     "MatchParen", s:dwht, s:dblk,        "" )
-call s:HI(       "ErrorMsg", "NONE", s:dred,        "" )
-call s:HI(       "WildMenu", s:lwht, s:dmag,        "" )
-call s:HI(         "Folded", s:dblk, s:dcyn, "reverse" )
-call s:HI(         "Search", s:lwht, s:dred,        "" )
-call s:HI(      "IncSearch", s:lwht, s:dred,        "" )
-call s:HI(     "WarningMsg", s:lwht, s:dred,        "" )
-call s:HI(       "Question", s:lwht, s:lgrn,        "" )
-call s:HI(          "Pmenu", s:lwht, s:dgrn,        "" )
-call s:HI(       "PmenuSel", s:lwht, s:dred,        "" )
-call s:HI(         "Visual", s:lwht, s:lblk,        "" )
-call s:HI(     "StatusLine", s:dwht, s:dblk,        "" )
-call s:HI(   "StatusLineNC", s:dblk, s:lblk,        "" )
+call s:HI(         "Normal", s:bclr, s:lwht,     "" )
+call s:HI(         "Ignore",     "", s:lblk,     "" )
+call s:HI(        "Comment",     "", s:dwht,     "" )
+call s:HI(         "LineNr",     "", s:lblk,     "" )
+call s:HI(          "Float",     "", s:dylw,     "" )
+call s:HI(        "Include",     "", s:dmag,     "" )
+call s:HI(         "Define",     "", s:dgrn,     "" )
+call s:HI(          "Macro",     "", s:lmag,     "" )
+call s:HI(        "PreProc",     "", s:lgrn,     "" )
+call s:HI(      "PreCondit",     "", s:lmag,     "" )
+call s:HI(        "NonText",     "", s:dcyn,     "" )
+call s:HI(      "Directory",     "", s:dcyn,     "" )
+call s:HI(     "SpecialKey",     "", s:lylw,     "" )
+call s:HI(           "Type",     "", s:dcyn,     "" )
+call s:HI(         "String",     "", s:dgrn,     "" )
+call s:HI(       "Constant",     "", s:lmag,     "" )
+call s:HI(        "Special",     "", s:lgrn,     "" )
+call s:HI(    "SpecialChar",     "", s:lred,     "" )
+call s:HI(         "Number",     "", s:lcyn,     "" )
+call s:HI(     "Identifier",     "", s:lmag,     "" )
+call s:HI(    "Conditional",     "", s:lcyn,     "" )
+call s:HI(         "Repeat",     "", s:lred,     "" )
+call s:HI(      "Statement",     "", s:dblu,     "" )
+call s:HI(          "Label",     "", s:lmag,     "" )
+call s:HI(       "Operator",     "", s:dylw,     "" )
+call s:HI(        "Keyword",     "", s:lred,     "" )
+call s:HI(   "StorageClass",     "", s:lylw,     "" )
+call s:HI(      "Structure",     "", s:dmag,     "" )
+call s:HI(        "Typedef",     "", s:dcyn,     "" )
+call s:HI(       "Function",     "", s:lylw,     "" )
+call s:HI(      "Exception",     "", s:dred,     "" )
+call s:HI(     "Underlined",     "", s:dblu,     "" )
+call s:HI(          "Title",     "", s:dylw,     "" )
+call s:HI(            "Tag",     "", s:lylw,     "" )
+call s:HI(      "Delimiter",     "", s:lblu,     "" )
+call s:HI( "SpecialComment",     "", s:lred,     "" )
+call s:HI(        "Boolean",     "", s:dylw,     "" )
+call s:HI(           "Todo", "NONE", s:lred,     "" )
+call s:HI(        "MoreMsg", "NONE", s:lmag,     "" )
+call s:HI(        "ModeMsg", "NONE", s:lmag,     "" )
+call s:HI(          "Debug", "NONE", s:dred,     "" )
+call s:HI(     "MatchParen", s:dwht, s:dblk,     "" )
+call s:HI(       "ErrorMsg", "NONE", s:dred,     "" )
+call s:HI(       "WildMenu", s:lwht, s:dmag,     "" )
+call s:HI(         "Folded", s:dblk, s:dwht,     "" )
+call s:HI(         "Search", s:lwht, s:dred,     "" )
+call s:HI(      "IncSearch", s:lwht, s:dred,     "" )
+call s:HI(     "WarningMsg", s:lwht, s:dred,     "" )
+call s:HI(       "Question", s:lwht, s:lgrn,     "" )
+call s:HI(          "Pmenu", s:lwht, s:dgrn,     "" )
+call s:HI(       "PmenuSel", s:lwht, s:dred,     "" )
+call s:HI(         "Visual", s:lwht, s:lblk,     "" )
+call s:HI(     "StatusLine", s:dwht, s:dblk,     "" )
+call s:HI(   "StatusLineNC", s:lblk, s:dblk,     "" )
+call s:HI(      "VertSplit", s:lblk, s:dblk,     "" )
+call s:HI(        "TabLine", s:dblk, s:lblk,     "" )
+call s:HI(    "TabLineFill",     "", s:dblk,     "" )
+call s:HI(     "TabLineSel", s:dblk, s:dwht,     "" )
+call s:HI(         "Cursor", s:lblk,     "",     "" )
+call s:HI(     "CursorLine", s:dblk,     "", "none" )
+call s:HI(   "CursorColumn", s:dblk,     "",     "" )
 " }}}
 
-" specific for vim script {{{
+" vimscript colors {{{
 call s:HI( "vimCommentTitle",     "", s:lgrn, "" )
 call s:HI(         "vimFold", s:lwht, s:dblk, "" )
 " }}}
 
-" specific for help files {{{
+" help file colors {{{
 call s:HI( "helpHyperTextJump", "", s:lylw, "" )
 " }}}
 
-" js numbers only {{{
+" javascript colors {{{
 call s:HI( "javaScriptNumber", "", s:lylw, "" )
 " }}}
 
-" special for html {{{
+" html colors {{{
 call s:HI(     "htmlTag", "", s:dcyn, "" )
 call s:HI(  "htmlEndTag", "", s:dcyn, "" )
 call s:HI( "htmlTagName", "", s:lylw, "" )
 " }}}
 
-" specific for perl {{{
+" perl colors {{{
 call s:HI(        "perlSharpBang", "", s:lgrn, "standout" )
 call s:HI(        "perlStatement", "", s:lmag,         "" )
 call s:HI( "perlStatementStorage", "", s:dred,         "" )
@@ -511,11 +540,11 @@ call s:HI(         "perlVarPlain", "", s:dylw,         "" )
 call s:HI(        "perlVarPlain2", "", s:lylw,         "" )
 " }}}
 
-" specific for ruby {{{
+" ruby colors {{{
 call s:HI( "rubySharpBang", "", s:lgrn, "standout" )
 " }}}
 
-" specific for diff {{{
+" diff colors {{{
 call s:HI(    "diffLine", "", s:lgrn, "" )
 call s:HI( "diffOldLine", "", s:dgrn, "" )
 call s:HI( "diffOldFile", "", s:dgrn, "" )
@@ -525,8 +554,8 @@ call s:HI( "diffRemoved", "", s:dred, "" )
 call s:HI( "diffChanged", "", s:dcyn, "" )
 " }}}
 
-" spell checking {{{
-if version >= 700
+" spell checking colors {{{
+if has("spell")
     hi clear SpellBad
     hi clear SpellCap
     hi clear SpellRare
