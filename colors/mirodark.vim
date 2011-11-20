@@ -118,6 +118,7 @@
 " }}}
 
 " higher contrast mode toggle function {{{
+if !exists("g:did_load_mirodark")
     fun! MirodarkToggleHigherContrastMode()
         if exists("g:mirodark_enable_higher_contrast_mode")
             unlet g:mirodark_enable_higher_contrast_mode
@@ -127,6 +128,9 @@
 
         colorscheme mirodark
     endfun
+
+    let g:did_load_mirodark=1
+endif
 " }}}
 
 " color approximation functions {{{
