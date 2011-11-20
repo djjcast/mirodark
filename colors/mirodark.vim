@@ -2,7 +2,7 @@
 "
 " Name:        mirodark
 " Version:     0.3
-" Last Change: 11-18-2011
+" Last Change: 11-20-2011
 " Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -69,7 +69,8 @@
 "     *color7:     #899ca1
 "     *color15:    #c0c0c0
 "
-" 2) If you are using xterm-88color or xterm-256color, then add the following to your ~/.vimrc file:
+" 2) If you are using xterm-88color or xterm-256color, then add the following to your ~/.vimrc file,
+"    before 'colorscheme mirodark':
 "
 "     let g:mirodark_disable_color_approximation=1
 "
@@ -106,9 +107,26 @@
 " NOTE: Enabling Higher Contrast Mode only affects mirodark in xterm-256color and xterm-88color,
 "       assuming you did not disable color approximation, and gVim.
 "
-" 1) Add the following to your ~/.vimrc file:
+" 1) Add the following to your ~/.vimrc file, before 'colorscheme mirodark':
 "
 "     let g:mirodark_enable_higher_constrast_mode=1
+"
+" 2) If you want to easily toggle Higher Contrast Mode on and off, then add the following to your
+"    ~/.vimrc file, after 'colorscheme mirodark':
+"
+"     nnoremap <Leader>m :call MirodarkToggleHigherContrastMode()<CR>     
+" }}}
+
+" higher contrast mode toggle function {{{
+    fun! MirodarkToggleHigherContrastMode()
+        if exists("g:mirodark_enable_higher_contrast_mode")
+            unlet g:mirodark_enable_higher_contrast_mode
+            colorscheme mirodark
+        else
+            let g:mirodark_enable_higher_contrast_mode=1
+            colorscheme mirodark
+        endif
+    endfun
 " }}}
 
 " color approximation functions {{{
