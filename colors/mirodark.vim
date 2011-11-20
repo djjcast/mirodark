@@ -121,11 +121,11 @@
     fun! MirodarkToggleHigherContrastMode()
         if exists("g:mirodark_enable_higher_contrast_mode")
             unlet g:mirodark_enable_higher_contrast_mode
-            colorscheme mirodark
         else
             let g:mirodark_enable_higher_contrast_mode=1
-            colorscheme mirodark
         endif
+
+        colorscheme mirodark
     endfun
 " }}}
 
