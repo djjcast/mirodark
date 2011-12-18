@@ -1,8 +1,8 @@
 " Vim Color File
 "
 " Name:        mirodark
-" Version:     0.3
-" Last Change: 11-20-2011
+" Version:     0.4
+" Last Change: 12-18-2011
 " Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -83,23 +83,23 @@
 "     #
 "     # Maintainer: Jason W Ryan <http://jasonwryan.com/>
 "     #
-"     if [ "$TERM" = "linux" ]; then
+"     if [[ $TERM == "linux" ]]; then
 "         echo -en "\033]P0000000" # black
-"         echo -en "\033]P85e5e5e"
-"         echo -en "\033]P18a2f58" # red
-"         echo -en "\033]P9cf4f88"
-"         echo -en "\033]P2287373" # green
-"         echo -en "\033]Pa53a6a6"
-"         echo -en "\033]P3914e89" # yellow
-"         echo -en "\033]Pbbf85cc"
-"         echo -en "\033]P4395573" # blue
-"         echo -en "\033]Pc4779b3"
-"         echo -en "\033]P55e468c" # magenta
-"         echo -en "\033]Pd7f62b3"
-"         echo -en "\033]P62b7694" # cyan
-"         echo -en "\033]Pe47959e"
-"         echo -en "\033]P7899ca1" # white
-"         echo -en "\033]Pfc0c0c0"
+"         echo -en "\033]P85e5e5e" # darkgray
+"         echo -en "\033]P18a2f58" # darkred
+"         echo -en "\033]P9cf4f88" # lightred
+"         echo -en "\033]P2287373" # darkgreen
+"         echo -en "\033]Pa53a6a6" # lightgreen
+"         echo -en "\033]P3914e89" # darkyellow
+"         echo -en "\033]Pbbf85cc" # lightyellow
+"         echo -en "\033]P4395573" # darkblue
+"         echo -en "\033]Pc4779b3" # lightblue
+"         echo -en "\033]P55e468c" # darkmagenta
+"         echo -en "\033]Pd7f62b3" # lightmagenta
+"         echo -en "\033]P62b7694" # darkcyan
+"         echo -en "\033]Pe47959e" # lightcyan
+"         echo -en "\033]P7899ca1" # lightgray
+"         echo -en "\033]Pfc0c0c0" # white
 "     fi
 "
 " Enable Higher Contrast Mode:
@@ -109,17 +109,17 @@
 "
 " 1) Add the following to your ~/.vimrc file, before 'colorscheme mirodark':
 "
-"     let g:mirodark_enable_higher_constrast_mode=1
+"     let g:mirodark_enable_higher_contrast_mode=1
 "
 " 2) If you want to easily toggle Higher Contrast Mode on and off, then add the following to your
-"    ~/.vimrc file, after 'colorscheme mirodark':
+"    ~/.vimrc file:
 "
-"     nnoremap <Leader>m :call MirodarkToggleHigherContrastMode()<CR>     
+"     nnoremap <Leader>m :MirodarkToggleHigherContrastMode<CR>
 " }}}
 
 " higher contrast mode toggle function {{{
-if !exists("g:did_load_mirodark")
-    fun! MirodarkToggleHigherContrastMode()
+if !exists("g:loaded_mirodark")
+    fun! s:toggle_higher_contrast_mode()
         if exists("g:mirodark_enable_higher_contrast_mode")
             unlet g:mirodark_enable_higher_contrast_mode
         else
@@ -129,7 +129,9 @@ if !exists("g:did_load_mirodark")
         colorscheme mirodark
     endfun
 
-    let g:did_load_mirodark=1
+    command! -nargs=0 MirodarkToggleHigherContrastMode  call s:toggle_higher_contrast_mode()
+
+    let g:loaded_mirodark=1
 endif
 " }}}
 
@@ -527,12 +529,15 @@ call s:HI(         "Visual", s:lwht, s:lblk,     "" )
 call s:HI(     "StatusLine", s:dwht, s:dblk,     "" )
 call s:HI(   "StatusLineNC", s:lblk, s:dblk,     "" )
 call s:HI(      "VertSplit", s:lblk, s:dblk,     "" )
-call s:HI(        "TabLine", s:dblk, s:lblk,     "" )
+call s:HI(        "TabLine", s:dblk, s:dwht,     "" )
 call s:HI(    "TabLineFill",     "", s:dblk,     "" )
 call s:HI(     "TabLineSel", s:dblk, s:dwht,     "" )
 call s:HI(         "Cursor", s:lblk,     "",     "" )
 call s:HI(     "CursorLine", s:dblk,     "", "none" )
 call s:HI(   "CursorColumn", s:dblk,     "",     "" )
+call s:HI(    "ColorColumn", s:lblk,     "",     "" )
+call s:HI(     "FoldColumn", "NONE", s:lblk,     "" )
+call s:HI(     "SignColumn", "NONE",     "",     "" )
 " }}}
 
 " vimscript colors {{{
