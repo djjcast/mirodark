@@ -2,7 +2,7 @@
 "
 " Name:        mirodark
 " Version:     0.4
-" Last Change: 12-18-2011
+" Last Change: 01-01-2012
 " Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -42,9 +42,14 @@
 "     !
 "     ! Maintainer: Jason W Ryan <http://jasonwryan.com/>
 "     !
+"     ! higher contrast background
+"     !*background: #000000
 "     *background: #121212
 "     *foreground: #999999
 "     ! black dark/light
+"     ! higher contrast black dark/light
+"     !*color0:     #121212
+"     !*color8:     #3d3d3d
 "     *color0:     #3d3d3d
 "     *color8:     #5e5e5e
 "     ! red dark/light
@@ -526,7 +531,7 @@ call s:HI(       "Question", s:lwht, s:lgrn,     "" )
 call s:HI(          "Pmenu", s:lwht, s:dgrn,     "" )
 call s:HI(       "PmenuSel", s:lwht, s:dred,     "" )
 call s:HI(         "Visual", s:lwht, s:lblk,     "" )
-call s:HI(     "StatusLine", s:dwht, s:dblk,     "" )
+call s:HI(     "StatusLine", s:dblk, s:dwht, "none" )
 call s:HI(   "StatusLineNC", s:lblk, s:dblk,     "" )
 call s:HI(      "VertSplit", s:lblk, s:dblk,     "" )
 call s:HI(        "TabLine", s:dblk, s:dwht,     "" )

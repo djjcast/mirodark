@@ -3,7 +3,7 @@ Vim Color File
 
 Name:        mirodark
 Version:     0.4
-Last Change: 12-18-2011
+Last Change: 01-01-2012
 Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
 URL:         https://github.com/djjcast/mirodark
 
@@ -44,9 +44,14 @@ but you want your terminal to use mirodark's color scheme, then follow these ins
     !
     ! Maintainer: Jason W Ryan <http://jasonwryan.com/>
     !
+    ! higher contrast background
+    !*background: #000000
     *background: #121212
     *foreground: #999999
     ! black dark/light
+    ! higher contrast black dark/light
+    !*color0:     #121212
+    !*color8:     #3d3d3d
     *color0:     #3d3d3d
     *color8:     #5e5e5e
     ! red dark/light
