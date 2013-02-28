@@ -3,7 +3,7 @@
 " Name:        mirodark
 " Version:     0.4
 " Last Change: 01-01-2012
-" Maintainer:  Jerome O Castaneda <djjcast@gmail.com>
+" Maintainer:  Jerome Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
 " About:       mirodark extends Jason W Ryan's miromiro(1) Vim color file with gVim, Linux console,
