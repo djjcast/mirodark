@@ -384,6 +384,7 @@ if has("gui_running") ||
     let s:lcyn_hex="47959e"        " light cyan hexadecimal    (color 14)
     let s:dwht_hex="899ca1"        " dark white hexadecimal    (color 7)
     let s:lwht_hex="c0c0c0"        " light white hexadecimal   (color 15)
+    let s:culc_hex="272727"        " cursor line/column hexadecimal
 
     if has("gui_running")
         let s:venv="gui" " vim environment (term, cterm, gui)
@@ -405,6 +406,7 @@ if has("gui_running") ||
         let s:lcyn="#".s:lcyn_hex
         let s:dwht="#".s:dwht_hex
         let s:lwht="#".s:lwht_hex
+        let s:culc="#".s:culc_hex
     else
         let s:venv="cterm"
         let s:bclr=s:rgb(s:bclr_hex)
@@ -425,6 +427,7 @@ if has("gui_running") ||
         let s:lcyn=s:rgb(s:lcyn_hex)
         let s:dwht=s:rgb(s:dwht_hex)
         let s:lwht=s:rgb(s:lwht_hex)
+        let s:culc=s:rgb(s:culc_hex)
     endif
 elseif $TERM == "linux"
     let s:venv="cterm"
@@ -446,6 +449,7 @@ elseif $TERM == "linux"
     let s:lcyn="LightCyan"
     let s:dwht="LightGray"
     let s:lwht="White"
+    let s:culc=s:dblk
 else
     let s:venv="cterm"
     let s:bclr=""
@@ -466,6 +470,7 @@ else
     let s:lcyn="14"
     let s:dwht="7"
     let s:lwht="15"
+    let s:culc=s:dblk
 endif
 " }}}
 
@@ -538,10 +543,10 @@ call s:HI(        "TabLine", s:dblk, s:dwht,     "" )
 call s:HI(    "TabLineFill",     "", s:dblk,     "" )
 call s:HI(     "TabLineSel", s:dblk, s:dwht,     "" )
 call s:HI(         "Cursor", s:lblk,     "",     "" )
-call s:HI(     "CursorLine", s:dblk,     "", "none" )
-call s:HI(   "CursorLineNr", s:dblk, s:dwht, "none" )
-call s:HI(   "CursorColumn", s:dblk,     "",     "" )
-call s:HI(    "ColorColumn", s:lblk,     "",     "" )
+call s:HI(     "CursorLine", s:culc,     "", "none" )
+call s:HI(   "CursorLineNr", s:culc, s:dwht, "none" )
+call s:HI(   "CursorColumn", s:culc,     "",     "" )
+call s:HI(    "ColorColumn", s:culc,     "",     "" )
 call s:HI(     "FoldColumn", "NONE", s:lblk,     "" )
 call s:HI(     "SignColumn", "NONE",     "",     "" )
 " }}}
