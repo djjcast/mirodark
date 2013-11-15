@@ -1,8 +1,8 @@
 " Vim Color File
 "
 " Name:        mirodark
-" Version:     0.4
-" Last Change: 01-01-2012
+" Version:     0.5
+" Last Change: 11-15-2013
 " Maintainer:  Jerome Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -539,6 +539,7 @@ call s:HI(    "TabLineFill",     "", s:dblk,     "" )
 call s:HI(     "TabLineSel", s:dblk, s:dwht,     "" )
 call s:HI(         "Cursor", s:lblk,     "",     "" )
 call s:HI(     "CursorLine", s:dblk,     "", "none" )
+call s:HI(   "CursorLineNr", s:dblk, s:dwht, "none" )
 call s:HI(   "CursorColumn", s:dblk,     "",     "" )
 call s:HI(    "ColorColumn", s:lblk,     "",     "" )
 call s:HI(     "FoldColumn", "NONE", s:lblk,     "" )
