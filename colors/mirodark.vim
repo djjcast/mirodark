@@ -2,7 +2,7 @@
 "
 " Name:        mirodark
 " Version:     0.5
-" Last Change: 11-15-2013
+" Last Change: 11-16-2013
 " Maintainer:  Jerome Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -603,6 +603,11 @@ if has("spell")
     call s:HI(  "SpellRare", "", "", "underline" )
     call s:HI( "SpellLocal", "", "", "underline" )
 endif
+" }}}
+
+" syntastic colors {{{
+call s:HI(   "SyntasticErrorSign", s:culc, s:lred, "" )
+call s:HI( "SyntasticWarningSign", s:culc, s:lmag, "" )
 " }}}
 
 " vim: foldenable foldmethod=marker foldmarker={{{,}}} foldlevel=0:
