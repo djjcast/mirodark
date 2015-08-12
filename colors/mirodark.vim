@@ -470,7 +470,13 @@ else
     let s:lcyn="14"
     let s:dwht="7"
     let s:lwht="15"
-    let s:culc=s:dblk
+    if &t_Co == 88
+        let s:culc="80" " #2e2e2e (xterm-88color)
+    elseif &t_Co == 256
+        let s:culc="235" " #262626 (xterm-256color)
+    else
+        let s:culc=s:dblk
+    endif
 endif
 " }}}
 
