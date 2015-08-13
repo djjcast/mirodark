@@ -616,4 +616,27 @@ call s:HI(   "SyntasticErrorSign", s:culc, s:lred, "" )
 call s:HI( "SyntasticWarningSign", s:culc, s:lmag, "" )
 " }}}
 
+" Neovim terminal emulator colors {{{
+call s:HI(   "TermCursor",     "", s:lred, "" )
+call s:HI( "TermCursorNC", s:lblk,     "", "" )
+if !empty($NVIM_TUI_ENABLE_TRUE_COLOR)
+    let g:terminal_color_0=s:dblk
+    let g:terminal_color_8=s:lblk
+    let g:terminal_color_1=s:dred
+    let g:terminal_color_9=s:lred
+    let g:terminal_color_2=s:dgrn
+    let g:terminal_color_10=s:lgrn
+    let g:terminal_color_3=s:dylw
+    let g:terminal_color_11=s:lylw
+    let g:terminal_color_4=s:dblu
+    let g:terminal_color_12=s:lblu
+    let g:terminal_color_5=s:dmag
+    let g:terminal_color_13=s:lmag
+    let g:terminal_color_6=s:dcyn
+    let g:terminal_color_14=s:lcyn
+    let g:terminal_color_7=s:dwht
+    let g:terminal_color_15=s:lwht
+endif
+" }}}
+
 " vim: foldenable foldmethod=marker foldmarker={{{,}}} foldlevel=0:
