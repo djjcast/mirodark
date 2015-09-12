@@ -548,7 +548,7 @@ call s:HI(      "VertSplit", s:lblk, s:dblk,     "" )
 call s:HI(        "TabLine", s:dblk, s:dwht,     "" )
 call s:HI(    "TabLineFill",     "", s:dblk,     "" )
 call s:HI(     "TabLineSel", s:dblk, s:dwht,     "" )
-call s:HI(         "Cursor", s:lred,     "",     "" )
+call s:HI(         "Cursor", s:lred, s:bclr,     "" )
 call s:HI(     "CursorLine", s:culc,     "", "none" )
 call s:HI(   "CursorLineNr", s:culc, s:dwht, "none" )
 call s:HI(   "CursorColumn", s:culc,     "",     "" )
@@ -614,6 +614,14 @@ endif
 " syntastic colors {{{
 call s:HI(   "SyntasticErrorSign", s:culc, s:lred, "" )
 call s:HI( "SyntasticWarningSign", s:culc, s:lmag, "" )
+" }}}
+
+" EasyMotion colors {{{
+call s:HI(         "EasyMotionShade",     "", s:lblk, "" )
+call s:HI(     "EasyMotionIncCursor", s:lred, s:bclr, "" )
+call s:HI(        "EasyMotionTarget",     "", s:lred, "" )
+call s:HI(  "EasyMotionTarget2First",     "", s:dred, "" )
+call s:HI( "EasyMotionTarget2Second",     "", s:dred, "" )
 " }}}
 
 " Neovim terminal emulator colors {{{
