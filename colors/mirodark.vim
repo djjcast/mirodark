@@ -2,7 +2,7 @@
 "
 " Name:        mirodark
 " Version:     0.5
-" Last Change: 08-11-2015
+" Last Change: 06-02-2016
 " Maintainer:  Jerome Castaneda <djjcast@gmail.com>
 " URL:         https://github.com/djjcast/mirodark
 "
@@ -146,7 +146,7 @@ endif
 "
 " Maintainer: Henry So, Jr. <henryso@panix.com>
 "
-if !has("gui_running") && empty($NVIM_TUI_ENABLE_TRUE_COLOR) &&
+if !has("gui_running") && (!has('termguicolors') || (has('termguicolors') && !&termguicolors)) && empty($NVIM_TUI_ENABLE_TRUE_COLOR) &&
             \ ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_disable_color_approximation"))
     " returns an approximate grey index for the given grey level
     fun! s:grey_number(x)
@@ -354,7 +354,7 @@ let colors_name="mirodark"
 " }}}
 
 " color scheme variables {{{
-if has("gui_running") || !empty($NVIM_TUI_ENABLE_TRUE_COLOR) ||
+if has("gui_running") || (has('termguicolors') && &termguicolors) || !empty($NVIM_TUI_ENABLE_TRUE_COLOR) ||
             \ ((&t_Co == 88 || &t_Co == 256) && !exists("g:mirodark_disable_color_approximation"))
     if !exists("g:mirodark_enable_higher_contrast_mode")
         let s:conf_bclr_hex="121212" " configuration-based background color hexadecimal
@@ -386,7 +386,7 @@ if has("gui_running") || !empty($NVIM_TUI_ENABLE_TRUE_COLOR) ||
     let s:lwht_hex="c0c0c0"        " light white hexadecimal   (color 15)
     let s:culc_hex="272727"        " cursor line/column hexadecimal
 
-    if has("gui_running") || !empty($NVIM_TUI_ENABLE_TRUE_COLOR)
+    if has("gui_running") || (has('termguicolors') && &termguicolors) || !empty($NVIM_TUI_ENABLE_TRUE_COLOR)
         let s:venv="gui" " vim environment (term, cterm, gui)
         let s:bclr="#".s:bclr_hex
         let s:fclr="#".s:fclr_hex
@@ -627,7 +627,7 @@ call s:HI( "EasyMotionTarget2Second",     "", s:dred, "" )
 " Neovim terminal emulator colors {{{
 call s:HI(   "TermCursor",     "", s:lred, "" )
 call s:HI( "TermCursorNC", s:lblk,     "", "" )
-if !empty($NVIM_TUI_ENABLE_TRUE_COLOR)
+if (has('termguicolors') && &termguicolors) || !empty($NVIM_TUI_ENABLE_TRUE_COLOR)
     let g:terminal_color_0=s:dblk
     let g:terminal_color_8=s:lblk
     let g:terminal_color_1=s:dred
